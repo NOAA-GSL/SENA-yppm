@@ -6,8 +6,8 @@
 #include <omp.h>
 #endif
 
+#ifndef __APPLE__
 extern void runnable (cpu_set_t *, int *, int *);
-
 void print_affinity_ (int *rank)
 {
   char hnbuf[64];
@@ -15,7 +15,6 @@ void print_affinity_ (int *rank)
   int lo;
   int hi;
   cpu_set_t coremask;
-
   gethostname (hnbuf, sizeof (hnbuf));
 #pragma omp parallel private (thread, coremask, lo, hi)
   {
@@ -33,3 +32,9 @@ void print_affinity_ (int *rank)
     }
   }
 }
+#else
+void print_affinity_ (int *dummy)
+{
+ printf("print_affinity is not supported on Mac OS\n");
+}
+#endif 
