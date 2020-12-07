@@ -49,7 +49,7 @@ jobs:
           nf-config --version
       
       # Test debug mode 
-      - name: Test c_sw Debug 
+      - name: Test yppm Debug 
         run: |
           cd ref
           rm -rf build
@@ -62,7 +62,7 @@ jobs:
           ctest
           
       # Test release mode 
-      - name: Test c_sw Release
+      - name: Test yppm Release
         run: |
           cd ref
           rm -rf build
@@ -101,7 +101,7 @@ jobs:
           nc-config --version
           nf-config --version
       # Test debug mode
-      - name: Build c_sw debug
+      - name: Build yppm debug
         run: |
           cd ref
           rm -rf build
@@ -113,7 +113,7 @@ jobs:
           make
           ctest
       # Test release mode
-      - name: Build c_sw release
+      - name: Build yppm release
         run: |
           cd ref
           rm -rf build
