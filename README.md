@@ -1,3 +1,5 @@
+![CI for yppm](https://github.com/NOAA-GSL/SENA-yppm/workflows/CI%20for%20yppm/badge.svg?branch=develop)
+
 ```
 This repository is a scientific product and is not official communication
 of the National Oceanic and Atmospheric Administration, or the United States
