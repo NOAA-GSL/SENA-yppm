@@ -87,6 +87,10 @@ jobs:
         with:
           lfs: true
 
+      # Update
+      - name: Update
+        run: sudo apt-get update
+
       # Install NetCDF
       - name: Install NetCDF
         run: sudo apt-get install libnetcdf-dev -y
