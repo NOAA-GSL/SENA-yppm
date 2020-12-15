@@ -59,4 +59,7 @@ make -j4 VERBOSE=1
 
 # Run the test suite
 export OMP_NUM_THREADS=1
+export OMP_PLACES=cores
+export OMP_PROC_BIND=close
+
 ctest
