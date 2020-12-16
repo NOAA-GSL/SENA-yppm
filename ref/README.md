@@ -99,7 +99,7 @@ $ export CC=gcc-10
 
 ## Testing the kernel
 
-First, set the OpenMP variable to 1. `yppm` is single threaded and this variable is not used. For example: 
+First, set the OpenMP variable. Although `yppm` is currently single-threaded, it may be threaded in the future, and setting `OMP_NUM_THREADS=1` avoids extraneous output of thread affinity information. 
 
 ```bash
 $ export OMP_NUM_THREADS=1
