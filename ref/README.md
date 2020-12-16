@@ -145,9 +145,7 @@ $ make install
 To run the installed executable (for example):
 
 ```bash
-$ export OMP_PLACES=cores
-$ export OMP_PROC_BIND=close
-$ export OMP_NUM_THREADS=4
+$ export OMP_NUM_THREADS=1
 $ exe/yppm ../test/test_input/yppm_0.0.1.nl
 ```
 
