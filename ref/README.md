@@ -5,11 +5,8 @@ formatted with Markdown syntax elements.  See https://www.markdownguide.org/chea
 for more information.
 
 This is the reference implementation of the `yppm` kernel extracted from the FV3 model.
-It is an excellent kernel for OpenMP analysis. The number of threads is determined by
-the `OMP_NUM_THREADS` environment variable, which defaults to the number of hyperthreads
-on the machine if it is not set.  Currently the number of threads is hard-coded to 4 in
-the build script when running `ctest`, but users can customize it at runtime for other
-runs.
+This kernel does not contain any OpenMP threading. Current analysis is limited to serial, 
+single threaded performance.
 
 ## Dependencies
 The following packages are required for building and running this kernel:
@@ -102,12 +99,10 @@ $ export CC=gcc-10
 
 ## Testing the kernel
 
-First, set the OpenMP variables, including number of threads you want to use for the tests. For example:
+First, set the OpenMP variable to 1. `yppm` is single threaded and this variable is not used. For example: 
 
 ```bash
-$ export OMP_PLACES=cores
-$ export OMP_PROC_BIND=close
-$ export OMP_NUM_THREADS=4
+$ export OMP_NUM_THREADS=1
 ```
 
 Then, to run the test suite (from the build directory):
