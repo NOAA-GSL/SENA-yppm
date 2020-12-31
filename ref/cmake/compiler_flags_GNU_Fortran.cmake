@@ -1,7 +1,7 @@
 ####################################################################
 # COMMON FLAGS
 ####################################################################
-set( CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fbacktrace -ffloat-store -fcray-pointer -fno-unsafe-math-optimizations -frounding-math")
+set( CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fbacktrace -ffloat-store -fcray-pointer -fno-unsafe-math-optimizations -frounding-math -mno-fused-madd")
 
 ####################################################################
 # RELEASE FLAGS
