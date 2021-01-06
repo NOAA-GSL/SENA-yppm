@@ -88,3 +88,8 @@ add_test(NAME regression_0.0.12_30
          COMMAND bash -c "set -o pipefail; ../src/yppm test_input/yppm_0.0.12_30.nl 2>&1 | tee test_output/yppm_0.0.12_30.log.out")
 add_test(NAME compare_0.0.12_30
          COMMAND ${COMPARE_SH} test_output/yppm_0.0.12_30.log.out test_output/yppm_0.0.12_30.test)
+
+add_test(NAME InterpolateTest 
+         COMMAND bash -c "set -o pipefail; ../src/interpolateTest 2>&1 | tee test_output/interpolateTest.out")
+
+
