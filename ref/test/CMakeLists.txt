@@ -6,18 +6,22 @@ list( APPEND yppm_test_data
 )
 
 list( APPEND yppm_test_input
+  test_input/yppm_0.0.12.nl
   test_input/yppm_0.0.12_10.nl
   test_input/yppm_0.0.12_20.nl
   test_input/yppm_0.0.12_30.nl
+  test_input/yppm_0.1.7.nl
   test_input/yppm_0.1.7_10.nl
   test_input/yppm_0.1.7_20.nl
   test_input/yppm_0.1.7_30.nl
 )
 
 list( APPEND yppm_test_output
+  test_output/yppm_0.0.12.test
   test_output/yppm_0.0.12_10.test
   test_output/yppm_0.0.12_20.test
   test_output/yppm_0.0.12_30.test
+  test_output/yppm_0.1.7.test
   test_output/yppm_0.1.7_10.test
   test_output/yppm_0.1.7_20.test
   test_output/yppm_0.1.7_30.test
@@ -53,6 +57,12 @@ endforeach(FILENAME)
 
 set(COMPARE_SH ${CMAKE_BINARY_DIR}/bin/yppm_compare.sh)
 
+# 0.1.7 input
+add_test(NAME regression_0.1.7
+         COMMAND bash -c "set -o pipefail; ../src/yppm test_input/yppm_0.1.7.nl 2>&1 | tee test_output/yppm_0.1.7.log.out")
+add_test(NAME compare_0.1.7
+         COMMAND ${COMPARE_SH} test_output/yppm_0.1.7.log.out test_output/yppm_0.1.7.test)
+
 # 0.1.7 input_10
 add_test(NAME regression_0.1.7_10
          COMMAND bash -c "set -o pipefail; ../src/yppm test_input/yppm_0.1.7_10.nl 2>&1 | tee test_output/yppm_0.1.7_10.log.out")
@@ -71,6 +81,12 @@ add_test(NAME regression_0.1.7_30
 add_test(NAME compare_0.1.7_30
          COMMAND ${COMPARE_SH} test_output/yppm_0.1.7_30.log.out test_output/yppm_0.1.7_30.test)
  
+# 0.0.12 input
+add_test(NAME regression_0.0.12
+         COMMAND bash -c "set -o pipefail; ../src/yppm test_input/yppm_0.0.12.nl 2>&1 | tee test_output/yppm_0.0.12_log.out")
+add_test(NAME compare_0.0.12
+         COMMAND ${COMPARE_SH} test_output/yppm_0.0.12.log.out test_output/yppm_0.0.12.test)
+
 # 0.0.12 input_10
 add_test(NAME regression_0.0.12_10
          COMMAND bash -c "set -o pipefail; ../src/yppm test_input/yppm_0.0.12_10.nl 2>&1 | tee test_output/yppm_0.0.12_10.log.out")
@@ -91,5 +107,3 @@ add_test(NAME compare_0.0.12_30
 
 add_test(NAME InterpolateTest 
          COMMAND bash -c "set -o pipefail; ../src/interpolateTest 2>&1 | tee test_output/interpolateTest.out")
-
-

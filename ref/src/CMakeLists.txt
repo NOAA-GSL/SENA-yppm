@@ -7,7 +7,12 @@ interpolate.f90
 yppm_driver.f90
 )
 
+list (APPEND test_src_files
+interpolateTest.f90
+)
+
 add_executable( ${PROJECT_NAME} ${yppm_src_files} )
+add_executable (interpolateTest ${test_src_files}  interpolate.f90)
 
 target_include_directories( ${PROJECT_NAME} SYSTEM PUBLIC ${NetCDF_INCLUDE_DIRS} )
 
@@ -16,12 +21,6 @@ if(OpenMP_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_Fortran)
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_C)
 endif()
-
-list (APPEND unitTest_src_files
-../unitTests/interpolateTest.f90
-)
-
-add_executable (interpolateTest ../unitTests/interpolateTest.f90 interpolate.f90)
 
 install(TARGETS yppm interpolateTest
         DESTINATION ${PROJECT_SOURCE_DIR}/exe)
