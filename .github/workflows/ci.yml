@@ -27,8 +27,8 @@ jobs:
       - name: Install Homebrew 
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       # Link Homebrew
-      - name: Link Homebrew
-        run: brew link --overwrite gcc@9
+      - name: unlink gcc@9 Homebrew
+        run: brew unlink gcc@9
       # Install netCDF
       - name: Install netCDF 
         run: brew install netcdf 
