@@ -27,13 +27,13 @@ jobs:
       - name: Install Homebrew 
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
       
-      # Install netCDF
-      - name: Install netCDF 
-        run: HOMEBREW_NO_AUTO_UPDATE=1 brew install netcdf 
-      
       # Unlink gcc@8 && gcc@9 
       - name: Unlink gcc
         run: brew link --overwrite gcc@8 && brew link --overwrite gcc@9
+      
+      # Install netCDF
+      - name: Install netCDF 
+        run: HOMEBREW_NO_AUTO_UPDATE=1 brew install netcdf 
       
       # Get NetCDF versions
       - name: Get NetCDF version
