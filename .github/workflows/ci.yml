@@ -29,7 +29,7 @@ jobs:
       
       # Unlink gcc@8 && gcc@9 
       - name: Unlink gcc
-        run: brew link --overwrite gcc@8 && brew link --overwrite gcc@9
+        run: brew unlink gcc@8 && brew unlink gcc@9
       
       # Install netCDF
       - name: Install netCDF 
