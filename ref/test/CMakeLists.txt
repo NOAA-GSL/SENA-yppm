@@ -57,6 +57,13 @@ endforeach(FILENAME)
 
 set(COMPARE_SH ${CMAKE_BINARY_DIR}/bin/yppm_compare.sh)
 
+# Add unit tests here.
+list (APPEND test_src_files
+${PROJECT_SOURCE_DIR}/test/src/interpolateTest.f90
+)
+add_executable (interpolateTest ${test_src_files}  ${PROJECT_SOURCE_DIR}/src/interpolate.f90)
+
+
 # 0.1.7 input
 add_test(NAME regression_0.1.7
          COMMAND bash -c "set -o pipefail; ../src/yppm test_input/yppm_0.1.7.nl 2>&1 | tee test_output/yppm_0.1.7.log.out")
@@ -83,7 +90,7 @@ add_test(NAME compare_0.1.7_30
  
 # 0.0.12 input
 add_test(NAME regression_0.0.12
-         COMMAND bash -c "set -o pipefail; ../src/yppm test_input/yppm_0.0.12.nl 2>&1 | tee test_output/yppm_0.0.12_log.out")
+         COMMAND bash -c "set -o pipefail; ../src/yppm test_input/yppm_0.0.12.nl 2>&1 | tee test_output/yppm_0.0.12.log.out")
 add_test(NAME compare_0.0.12
          COMMAND ${COMPARE_SH} test_output/yppm_0.0.12.log.out test_output/yppm_0.0.12.test)
 
@@ -106,4 +113,5 @@ add_test(NAME compare_0.0.12_30
          COMMAND ${COMPARE_SH} test_output/yppm_0.0.12_30.log.out test_output/yppm_0.0.12_30.test)
 
 add_test(NAME InterpolateTest 
-         COMMAND bash -c "set -o pipefail; ../src/interpolateTest 2>&1 | tee test_output/interpolateTest.out")
+         COMMAND bash -c "set -o pipefail; ../test/interpolateTest 2>&1 | tee test_output/interpolateTest.out")
+
