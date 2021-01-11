@@ -21,7 +21,7 @@ The following packages are required for building and running this kernel:
 
 ## Prerequisites
 This code requires git-lfs. Before cloning the repository, verify that
-git-lfs is installed. This only needs to be done once per user per machine.
+git-lfs is installed, by issuing the following command. This only needs to be done once per user per machine.
 
 ```bash
 $ git lfs install
@@ -34,7 +34,15 @@ module (e.g. `module load git`).  If you are using a system that uses modules, u
 `module avail` to look for alternative versions of git that may have git-lfs support.
 
 Make sure the files in `data/inputs` are NetCDF data files (not text) before proceeding to
-the build step.
+the build step. A simple way to do that is with the `file` command as shown below:
+
+```
+$ file data/inputs/*
+data/inputs/c_sw_12x24.nc: NetCDF Data Format data
+data/inputs/c_sw_24x24.nc: NetCDF Data Format data
+data/inputs/c_sw_48x24.nc: NetCDF Data Format data
+data/inputs/c_sw_48x48.nc: NetCDF Data Format data
+```
 
 **NOTE**: If you cloned the repository with a version of git without git-lfs installed,
 or before you ran `git lfs install` you
