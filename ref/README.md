@@ -37,7 +37,7 @@ Make sure the files in `data/inputs` are NetCDF data files (not text) before pro
 the build step.
 
 **NOTE**: If you cloned the repository with a version of git without git-lfs installed,
-or before you run `git lfs install` you
+or before you ran `git lfs install` you
 must run the following command (with a version of git that does support git-lfs) from the base
 of the repository to fetch the input data before proceeding to the build steps. 
 
