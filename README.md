@@ -60,20 +60,5 @@ simply a place holder for names given to future implementations.
 
 # Contributing
 
-Contributors who wish to provide an alternative implementation of `yppm`
-must do so by issuing a Pull Request to the `develop` branch from their
-own forks of this repository. Write access to this repository can not be
-granted.
-
-All pull requests to this repository must include:
-
-* A build system that functions across platforms and (if applicable) across
-multiple compilers.
-* Source code that is well written, properly formatted, and documented.
-* A test suite that passes and duplicates the tests that are run in the
-reference implementation. At present, 11 digits of accuracy are expected.
-* A GitHub Actions configuration to automate the new implementation's
-test suite.
-* A documentation README.md describing the new implementation, including how
-to run and test it.
+Please see the [Contributing Guide](CONTRIBUTING.md) for information about contributing to this repository.
 
