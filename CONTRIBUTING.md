@@ -41,7 +41,7 @@ All pull requests for new implementations should include:
 across multiple compilers.
 * Source code that is well written, properly formatted, and documented.
 * A test suite that verifies the implementation produces the same results as
-the reference implementation. At present, 11 digits of accuracy are expected.
+the reference implementation.
 * A GitHub Actions continuous integeration configuration to automate the new
 implementation's test suite (we can help with this if needed).
 * A documentation README.md describing the new implementation, including how
