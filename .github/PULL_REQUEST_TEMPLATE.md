@@ -23,6 +23,8 @@ _Put an `x` in the boxes that apply. You can also fill these out after creating 
 
 - [ ] I have read the [CONTRIBUTING](https://github.com/NOAA-GSL/SENA-yppm/blob/develop/CONTRIBUTING.md) document
 - [ ] I have ensured all my changes contribute to a common purpose
+- [ ] I have verified my change does not add debug code
+- [ ] I have verified my change does not add code that is commented out
 - [ ] I have verified unit tests pass locally with my changes
 - [ ] I have verified my changes adhere to style guidelines
 - [ ] I have added tests that prove my fix is effective or that my feature works
