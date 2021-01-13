@@ -21,7 +21,7 @@ _Put an `x` in all the boxes that apply_
 
 _Put an `x` in the boxes that apply. You can also fill these out after creating the PR. If you're unsure about any of them, don't hesitate to ask. We're here to help! This is simply a reminder of what we are going to look for before merging your code._
 
-- [ ] I have read the [CONTRIBUTING](../CONTRIBUTING.md) document
+- [ ] I have read the [CONTRIBUTING](https://github.com/NOAA-GSL/SENA-yppm/blob/develop/CONTRIBUTING.md) document
 - [ ] I have ensured all my changes contribute to a common purpose
 - [ ] I have verified unit tests pass locally with my changes
 - [ ] I have verified my changes adhere to style guidelines
