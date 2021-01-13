@@ -1,5 +1,7 @@
 ## Proposed changes
 
+**Replace the three prompts in this section with the applicable content. Delete prompts that do not apply**
+
 Describe the big picture of your changes here to communicate what they accomplish and why this pull request should be accepted.
 
 If it fixes a bug or resolves a feature request, be sure to link to that issue.
