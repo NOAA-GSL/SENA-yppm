@@ -131,13 +131,13 @@ $ ctest
 To run a specific test (for example):
 
 ```bash
-$ ctest -R regression_12x24
+$ ctest -R regression_0.0.3
 ```
 
 To run a specific test with full output to get more information about a failure (for example):
 
 ```bash
-$ ctest -VV -R regression_12x24
+$ ctest -VV -R regression_0.0.3
 ```
 
 ## Build and test script
