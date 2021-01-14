@@ -38,10 +38,17 @@ the build step. A simple way to do that is with the `file` command as shown belo
 
 ```
 $ file data/inputs/*
-data/inputs/c_sw_12x24.nc: NetCDF Data Format data
-data/inputs/c_sw_24x24.nc: NetCDF Data Format data
-data/inputs/c_sw_48x24.nc: NetCDF Data Format data
-data/inputs/c_sw_48x48.nc: NetCDF Data Format data
+inputs/yppm_0.0.1.nc:  NetCDF Data Format data
+inputs/yppm_0.0.12.nc: NetCDF Data Format data
+inputs/yppm_0.0.3.nc:  NetCDF Data Format data
+inputs/yppm_0.0.6.nc:  NetCDF Data Format data
+inputs/yppm_0.0.7.nc:  NetCDF Data Format data
+inputs/yppm_0.0.8.nc:  NetCDF Data Format data
+inputs/yppm_0.0.9.nc:  NetCDF Data Format data
+inputs/yppm_0.1.15.nc: NetCDF Data Format data
+inputs/yppm_0.1.3.nc:  NetCDF Data Format data
+inputs/yppm_0.1.6.nc:  NetCDF Data Format data
+inputs/yppm_0.1.7.nc:  NetCDF Data Format data
 ```
 
 **NOTE**: If you cloned the repository with a version of git without git-lfs installed,
