@@ -22,4 +22,4 @@ Replace this text with a description of steps needed to reproduce the issue. Inc
 
 ## Additional notes
 
-Replace this text with additional information relevant to the issue here.
+Replace this text with additional information relevant to the issue here. Include links to relevant issues and pull requests when applicable.
