@@ -20,8 +20,8 @@ The following packages are required for building and running this kernel:
 * [git-lfs](https://git-lfs.github.com/)
 
 ## Prerequisites
-This code requires git-lfs. Before proceeding to the build instructions, verify that
-git-lfs is installed. This only needs to be done once per user per machine.
+This code requires git-lfs. Before cloning the repository, verify that
+git-lfs is installed, by issuing the following command. This only needs to be done once per user per machine.
 
 ```bash
 $ git lfs install
@@ -34,16 +34,26 @@ module (e.g. `module load git`).  If you are using a system that uses modules, u
 `module avail` to look for alternative versions of git that may have git-lfs support.
 
 Make sure the files in `data/inputs` are NetCDF data files (not text) before proceeding to
-the build step.
+the build step. A simple way to do that is with the `file` command as shown below:
 
-**NOTE**: If you cloned the repository with a version of git without git-lfs installed, you
+```
+$ file data/inputs/*
+data/inputs/c_sw_12x24.nc: NetCDF Data Format data
+data/inputs/c_sw_24x24.nc: NetCDF Data Format data
+data/inputs/c_sw_48x24.nc: NetCDF Data Format data
+data/inputs/c_sw_48x48.nc: NetCDF Data Format data
+```
+
+**NOTE**: If you cloned the repository with a version of git without git-lfs installed,
+or before you ran `git lfs install` you
 must run the following command (with a version of git that does support git-lfs) from the base
-of the repository to fetch the input data before proceeding to the build steps. Or you can
-reclone the repository with git-lfs installed, instead.
+of the repository to fetch the input data before proceeding to the build steps. 
 
 ```bash
 $ git lfs pull
 ```
+
+Alternatively, you can reclone the repository with git-lfs installed.
 
 ## Building the kernel
 
