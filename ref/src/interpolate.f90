@@ -4,7 +4,6 @@ module interpolate
 contains
 
   subroutine interpolate_allocate(odims, interpFactor, fdims)
-  implicit none
 
     ! Subroutine for calculating the lower and upper bounds of an
     ! interpolated array with regard to interpFactor.  The user is
@@ -36,24 +35,14 @@ contains
 
     fdims(1) = odims(1)
     fdims(3) = odims(3)
-    fdims(2) = (odims(1)-1) + (odims(2)-odims(1)+1) + (odims(2)-odims(1))*interpFactor
-    fdims(4) = (odims(3)-1) + (odims(4)-odims(3)+1) + (odims(4)-odims(3))*interpFactor
+    fdims(2) = odims(2) + (odims(2) - odims(1)) * interpFactor
+    fdims(4) = odims(4) + (odims(4) - odims(3)) * interpFactor
 
   end subroutine interpolate_allocate
 
   subroutine interpolate_array(oa, odims, f, fdims, interpFactor)
 
     ! Bilinear interpolation of f with respect to oa.
-    ! See Wikipedia's description of bilinear interpolation.
-    !    https://en.wikipedia.org/wiki/Bilinear_interpolation
-    !
-    ! This subroutine follows the "Alternative algorithm" in the
-    ! article refererenced above.
-    ! Referring to the square in the article:
-    !   Q11 = (x1,y1) ! bottom left
-    !   Q12 = (x1,y2) ! top left
-    !   Q21 = (x2,y1) ! botton right
-    !   Q22 = (x2,y2) ! top right
     !
     ! f's size has been calculated in subroutine interpolate_allocate
     ! f has been allocated in the call tree above this subroutine
@@ -65,7 +54,7 @@ contains
     ! fdims       - low/high subscripts for f 
     ! interpFactor- interpolation factor
 
-    integer, intent(in)    :: odims(4) ! 
+    integer, intent(in)    :: odims(4)
     real,    intent(in)    :: oa(odims(1):odims(2), odims(3):odims(4))
     integer, intent(in)    :: fdims(4)
     real,    intent(inout) :: f(fdims(1):fdims(2), fdims(3):fdims(4))
@@ -95,10 +84,9 @@ contains
     !                   [x o o x o o x]
 
     ! Locals
-    integer :: x1,x2,y1,y2         ! indexes of the interpolated point
-    integer :: ix,iy               ! indexes of the interpolated point
-    real    :: a0,a1,a2,a3         ! coefficients
-    integer :: icount              ! 1D counter
+    integer :: x1,x2,y1,y2         ! indices of the corner points
+    integer :: ix,iy               ! indices of the interpolated point
+    real    :: wx1, wx2, wy1, wy2  ! weights for bilinear interpolation
     real    :: fQ11,fQ12,fQ21,fQ22 ! function values at the corners
 
     integer :: ol1,ou1,ol2,ou2     ! lower and upper bounds of 2D array oa
@@ -118,26 +106,25 @@ contains
     fu2 = fdims(4)
 
     ! Intersperse the oa points into f.
-    icount = 0
-    do j = fl2, fu2, interpFactor + 1
-      do i = fl1, fu1, interpFactor + 1
-        f(i, j) = oa(ol1 + modulo(icount, ou1-ol1+1), &
-                                 (ol2 + icount/(ou1-ol1+1)))
-        icount = icount + 1
-      enddo
-    enddo
+    do j = ol2, ou2
+      do i = ol1, ou1
+        f(ol1 + (i - ol1) * (interpFactor + 1), ol2 + (j - ol2) * (interpFactor + 1)) = oa(i, j)
+      end do
+    end do
 
     ! Loop over all the squares.
-    do j = fl2, fu2-1, interpFactor + 1
-      do i = fl1, fu1-1, interpFactor + 1
+    do j = fl2, fu2 - 1, interpFactor + 1
+      do i = fl1, fu1 - 1, interpFactor + 1
         ! Loop over all the interpolated points
-        do iy=j,j+interpFactor +1
-           do ix=i,i+interpFactor +1
+        do iy = j, j + interpFactor + 1
+           do ix = i, i + interpFactor + 1
+
              ! Find the indices of the corner points
              x1 = i
              x2 = i + interpFactor +1
              y1 = j
              y2 = j + interpFactor +1
+
              ! Skip the corner points
              if (((ix==x1) .and. (iy==y1)) .or. &
                  ((ix==x1) .and. (iy==y2)) .or. &
@@ -145,30 +132,24 @@ contains
                  ((ix==x2) .and. (iy==y2))) then
                cycle 
              endif
+
              ! Find the value of the corner points
              fQ11 = f(x1,y1)
              fQ12 = f(x1,y2)
              fQ21 = f(x2,y1)
              fQ22 = f(x2,y2)
-             ! Calulate the values of a0,a1,a2,a3.
-             a0 = (fQ11*x2*y2)/((x1-x2)*(y1-y2)) + &
-                  (fQ12*x2*y1)/((x1-x2)*(y2-y1)) + &
-                  (fQ21*x1*y2)/((x1-x2)*(y2-y1)) + &
-                  (fQ22*x1*y1)/((x1-x2)*(y1-y2)) 
-             a1 = (fQ11*y2)/((x1-x2)*(y2-y1)) + &
-                  (fQ12*y1)/((x1-x2)*(y1-y2)) + &
-                  (fQ21*y2)/((x1-x2)*(y1-y2)) + &
-                  (fQ22*y1)/((x1-x2)*(y2-y1)) 
-             a2 = (fQ11*x2)/((x1-x2)*(y2-y1)) + &
-                  (fQ12*x2)/((x1-x2)*(y1-y2)) + &
-                  (fQ21*x1)/((x1-x2)*(y1-y2)) + &
-                  (fQ22*x1)/((x1-x2)*(y2-y1))
-             a3 = fQ11/((x1-x2)*(y1-y2)) + &
-                  fQ12/((x1-x2)*(y2-y1)) + &
-                  fQ21/((x1-x2)*(y2-y1)) + &
-                  fQ22/((x1-x2)*(y1-y2)) 
-             ! Store the interpolated point.
-             f(ix,iy) = a0 + a1*ix + a2*iy + a3*ix*iy
+
+             ! Get the weights for the x direction
+             wx1 = REAL(x2 - ix) / REAL(x2 - x1)
+             wx2 = REAL(ix - x1) / REAL(x2 - x1)
+
+             ! Get the weights for the y direction
+             wy1 = REAL(y2 - iy) / REAL(y2 - y1)
+             wy2 = REAL(iy - y1) / REAL(y2 - y1)
+
+             ! interpolate
+             f(ix, iy) = wy1 * (wx1 * fQ11 + wx2 * fQ21) + wy2 * (wx1 * fQ12 + wx2 * fQ22)
+
            enddo ! x loop
          enddo   ! y loop
        enddo     ! i loop
@@ -177,4 +158,3 @@ contains
   end subroutine interpolate_array
 
 end module interpolate
- 

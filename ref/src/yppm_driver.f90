@@ -124,7 +124,7 @@ program yppm_driver
 
   ! Write timing information
   write (*, *)
-  write (*, '(A,F12.9)') "Total time (in seconds)=", ((count_end - count_start)*1.0)/count_rate
+  write (*, '(A, F12.9)') "Total time (in seconds)=", ((count_end - count_start) * 1.0) / count_rate
 
   ! Deallocate the state variables
   call deallocate_state()
