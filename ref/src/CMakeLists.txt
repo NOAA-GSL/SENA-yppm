@@ -3,6 +3,7 @@ netCDFModule.f90
 print_affinity.c
 runnable.c
 yppm_core.F90
+interpolate.f90
 yppm_driver.f90
 )
 
@@ -16,5 +17,3 @@ if(OpenMP_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_C)
 endif()
 
-install(TARGETS yppm
-        DESTINATION ${PROJECT_SOURCE_DIR}/exe)
