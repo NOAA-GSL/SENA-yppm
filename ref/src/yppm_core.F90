@@ -508,7 +508,7 @@ contains
 
     write(*,*)
     write(*,'(A5,A115)') "TEST ", repeat("=",115)
-    write(*,'(A5,A20)') "TEST ", msg
+    write(*,'(A5,A30)') "TEST ", msg
     write(*,'(A5,A115)') "TEST ", repeat("=",115)
     write(*,'(A5,A15,5A20)') "TEST ", "Variable", "Min", "Max", "First", "Last", "RMS"
     write(*,'(A5,A115)') "TEST ", repeat("-",115)
