@@ -21,17 +21,21 @@ program yppm_driver
   integer, external :: print_affinity                ! External subroutine
 
   ! Input configuration variables
-  character(len=64) :: namelist_file = "test_input/yppm_0.0.1.nl"
-  character(len=64) :: input_file, output_file
-  integer           :: nl_unit
+  character(len=128) :: namelist_file = "test_input/yppm_0.0.1.nl"
+  character(len=128) :: input_file, output_file
+  integer           :: nl_unit, interpFactor
 
   ! Input namelists
-  namelist /io/       input_file, output_file
+  namelist /io/ input_file, output_file, interpFactor
+  ! Set defaults.  Null strings should cause a quick error.
+  input_file = ""
+  output_file = ""
+  interpFactor = 0
 
   ! Get the number of arguments
   narg = command_argument_count()
   if (narg /= 1) then
-    write(*,*) "Usage: yppm <namelist_file>"
+    write (*, *) "Usage: yppm <namelist_file>"
     stop 1
   end if
 
@@ -39,10 +43,10 @@ program yppm_driver
   call get_command_argument(1, namelist_file)
 
   ! Open the namelist file
-  open(newunit=nl_unit, file=TRIM(namelist_file), form='formatted', status='old')
+  open (newunit=nl_unit, file=TRIM(namelist_file), form='formatted', status='old')
 
   ! Read the data IO settings from the namelist
-  read(nl_unit, nml=io)
+  read (nl_unit, nml=io)
 
   ! Get OMP_NUM_THREADS value
   nthreads = omp_get_max_threads()
@@ -51,30 +55,42 @@ program yppm_driver
   ! Intel's -ftz option flushes denormalized values to zero for non-SSE instructions anyway
   underflow_support = ieee_support_underflow_control(fptest)
   if (underflow_support) then
-    write(*,*) "Underflow control supported for the default real kind"
+    write (*, *) "Underflow control supported for the default real kind"
   else
-    write(*,*) "No underflow control support"
+    write (*, *) "No underflow control support"
     stop 1
   end if
   call ieee_set_underflow_mode(.false.)
   call ieee_get_underflow_mode(gradual)
-  if (.not. gradual) then 
-    write(*,*) "Able to set abrupt underflow mode"
-  else    
-    write(*,*) "Error setting abrupt underflow mode"
+  if (.not. gradual) then
+    write (*, *) "Able to set abrupt underflow mode"
+  else
+    write (*, *) "Error setting abrupt underflow mode"
     stop 1
   end if
 
   ! Print out configuration settings
-  write(*, '(A,A)') 'Input file = ', TRIM(input_file)
-  write(*, '(A,I0)') 'nthreads = ', nthreads
+  write (*, '(A,A)') 'Input file = ', TRIM(input_file)
+  write (*, '(A,I0)') 'nthreads = ', nthreads
   ret = print_affinity(0)
 
   ! Read the input state from the NetCDF input file
   call read_state(TRIM(input_file))
-
+  
   ! Print the input state
-  call print_state("Input State")
+  call print_state("Input State - Original")
+
+  ! Interpolate the data according to the interpolation factor.
+  if (interpFactor > 0) then
+    call interpolate_state(interpFactor)
+    ! Print the input state
+    call print_state("Input State - Interpolated")
+  elseif (interpFactor == 0) then
+    ! Do nothing.
+  else
+    print *,"Error, InterpFactor less than zero."
+    stop 1
+  endif
 
   ! Get the start time
   call system_clock(count_start, count_rate)
@@ -84,7 +100,7 @@ program yppm_driver
             nested, grid_type, lim_fac, regional)
 
   ! Get the stop time
-  call system_clock(count_end, count_rate)  
+  call system_clock(count_end, count_rate)
 
   ! Print the output state
   call print_state("Output State")
@@ -93,10 +109,295 @@ program yppm_driver
   call write_state(TRIM(output_file))
 
   ! Write timing information
-  write(*,*)
-  write(*,'(A,F12.9)') "Total time (in seconds)=" ,  ((count_end - count_start) * 1.0) / count_rate
+  write (*, *)
+  write (*, '(A, F12.9)') "Total time (in seconds)=", ((count_end - count_start) * 1.0) / count_rate
 
   ! Deallocate the state variables
   call deallocate_state()
 
+<<<<<<< HEAD
+=======
+contains
+
+  !------------------------------------------------------------------
+  ! print_state
+  !
+  ! prints statistics for the kernel state variables
+  !------------------------------------------------------------------
+  subroutine print_state(msg)
+
+    character(len=*) :: msg
+
+    write (*, *)
+    write (*, '(A5,A115)') "TEST ", repeat("=", 115)
+    write (*, '(A5,A30)') "TEST ", msg
+    write (*, '(A5,A115)') "TEST ", repeat("=", 115)
+    write (*, '(A5,A15,5A20)') "TEST ", "Variable", "Min", "Max", "First", "Last", "RMS"
+    write (*, '(A5,A115)') "TEST ", repeat("-", 115)
+
+    call print_2d_variable("fy2", fy2)
+    call print_2d_variable("q", q)
+    call print_2d_variable("cry", cry)
+    call print_2d_variable("dya", dya)
+
+    write (*, '(A5,A115)') "TEST ", repeat("-", 115)
+    write (*, *)
+
+  end subroutine print_state
+
+  !------------------------------------------------------------------
+  ! print_2d_variable
+  !
+  ! prints statistics for a 2d state variable
+  !------------------------------------------------------------------
+  subroutine print_2d_variable(name, data)
+
+    character(len=*) :: name
+    real             :: data(:, :)
+
+    ! Note: Assumed shape array sections always start with index=1 for all dimensions
+    !       So we don't have to know start/end indices here
+    write (*, '(A5, A15,5E20.6)') "TEST ", name, minval(DBLE(data)), maxval(DBLE(data)), DBLE(data(1, 1)), &
+      DBLE(data(size(data, 1), size(data, 2))), &
+      sqrt(sum(DBLE(data)**2)/size(data))
+
+  end subroutine print_2d_variable
+
+  !------------------------------------------------------------------
+  ! deallocate_state
+  !
+  ! Deallocate state variables
+  !------------------------------------------------------------------
+  subroutine deallocate_state
+
+    if (allocated(cry)) then
+      deallocate (cry)
+    end if
+    if (allocated(q)) then
+      deallocate (q)
+    end if
+    if (allocated(dya)) then
+      deallocate (dya)
+    end if
+    if (allocated(fy2)) then
+      deallocate (fy2)
+    end if
+
+  end subroutine deallocate_state
+
+  !------------------------------------------------------------------
+  ! allocate_state
+  !
+  ! Aallocate state variables
+  !------------------------------------------------------------------
+  subroutine allocate_state
+
+    call deallocate_state()
+
+    allocate (cry(isd:ied, js:je + 1))
+    allocate (q(isd:ied, jsd:jed))
+    allocate (dya(isd:ied, jsd:jed))
+    allocate (fy2(isd:ied, js:je + 1))
+
+  end subroutine allocate_state
+
+  !------------------------------------------------------------------
+  ! read_state
+  !
+  ! Read state from NetCDF file
+  !------------------------------------------------------------------
+  subroutine read_state(filename)
+
+    character(len=*), intent(in) :: filename
+
+    ! netCDF variables
+    integer :: ncFileID
+
+    ! Local variables
+    integer :: nid, njd, njp1
+
+    ! Open file for read only
+    call open_file(filename, "r", ncFileID)
+
+    ! Read global attributes
+    call read_global_int(ncFileID, "isd", isd)
+    call read_global_int(ncFileID, "ied", ied)
+    call read_global_int(ncFileID, "jsd", jsd)
+    call read_global_int(ncFileID, "jed", jed)
+    call read_global_int(ncFileID, "js", js)
+    call read_global_int(ncFileID, "je", je)
+    call read_global_int(ncFileID, "ord_in", ord_in)
+    call read_global_int(ncFileID, "npx", npx)
+    call read_global_int(ncFileID, "npy", npy)
+    call read_global_int(ncFileID, "grid_type", grid_type)
+    call read_global_real(ncFileID, "lim_fac", lim_fac)
+    call read_global_logical(ncFileID, "regional", regional)
+    call read_global_logical(ncFileID, "nested", nested)
+
+    ! Read the model dimensions
+    call read_dimension(ncFileID, "nid", nid)
+    call read_dimension(ncFileID, "njd", njd)
+    call read_dimension(ncFileID, "njp1", njp1)
+
+    ! Check to make sure state dimensions matches state indices
+    if ((nid /= (ied - isd + 1)) .OR. (njd /= (jed - jsd + 1)) .OR. &
+        (njp1 /= (je - js + 2))) then
+      write (*, *) "Dimensions and indices of input data are inconsistent"
+      stop 1
+    end if
+
+    ! Allocate and initialize the state
+    call allocate_state()
+
+    ! Read the state variables
+    call read_2d_real(ncFileID, "fy2", fy2)
+    call read_2d_real(ncFileID, "q", q)
+    call read_2d_real(ncFileID, "cry", cry)
+    call read_2d_real(ncFileID, "dya", dya)
+
+    ! Close the NetCDF file
+    call close_file(ncFileID)
+
+  end subroutine read_state
+
+  !------------------------------------------------------------------
+  ! write_state
+  !
+  ! Write state to NetCDF file
+  !------------------------------------------------------------------
+  subroutine write_state(filename)
+
+    character(len=*), intent(in) :: filename
+
+    ! General netCDF variables
+    integer :: ncFileID
+    integer :: nidDimID, njdDimID, njp1DimID
+    integer :: fy2VarID, qVarID, cryVarID, dyaVarID
+
+    ! Local variables
+    character(len=8)      :: crdate  ! Needed by F90 DATE_AND_TIME intrinsic
+    character(len=10)     :: crtime  ! Needed by F90 DATE_AND_TIME intrinsic
+    character(len=5)      :: crzone  ! Needed by F90 DATE_AND_TIME intrinsic
+    integer, dimension(8) :: values  ! Needed by F90 DATE_AND_TIME intrinsic
+    character(len=19)     :: timestr ! String representation of clock
+
+    ! Open new file, overwriting previous contents
+    call open_file(filename, "w", ncFileID)
+
+    ! Write Global Attributes
+    call DATE_AND_TIME(crdate, crtime, crzone, values)
+    write (timestr, '(i4,2(a,i2.2),1x,i2.2,2(a,i2.2))') &
+      values(1), '/', values(2), '/', values(3), values(5), ':', &
+      values(6), ':', values(7)
+    call write_global_character(ncFileID, "creation_date", timestr)
+    call write_global_character(ncFileID, "kernel_name", "yppm")
+    call write_global_int(ncFileID, "isd", isd)
+    call write_global_int(ncFileID, "ied", ied)
+    call write_global_int(ncFileID, "jsd", jsd)
+    call write_global_int(ncFileID, "jed", jed)
+    call write_global_int(ncFileID, "js", js)
+    call write_global_int(ncFileID, "je", je)
+    call write_global_int(ncFileID, "ord_in", ord_in)
+    call write_global_int(ncFileID, "npx", npx)
+    call write_global_int(ncFileID, "npy", npy)
+    call write_global_int(ncFileID, "grid_type", grid_type)
+    call write_global_real(ncFileID, "lim_fac", lim_fac)
+    call write_global_logical(ncFileID, "regional", regional)
+    call write_global_logical(ncFileID, "nested", nested)
+
+    ! Define the i, j dimensions
+    call define_dim(ncFileID, "nid", ied - isd + 1, nidDimID)
+    call define_dim(ncFileID, "njd", jed - jsd + 1, njdDimID)
+
+    ! Define the jp1 dimension
+    call define_dim(ncFileID, "njp1", je - js + 2, njp1DimID)
+
+    ! Define the fields
+    call define_var_2d_real(ncFileID, "fy2", nidDimID, njp1DimID, fy2VarID)
+    call define_var_2d_real(ncFileID, "q", nidDimID, njdDimID, qVarID)
+    call define_var_2d_real(ncFileID, "cry", nidDimID, njp1DimID, cryVarID)
+    call define_var_2d_real(ncFileID, "dya", nidDimID, njdDimID, dyaVarID)
+
+    ! Leave define mode so we can fill
+    call define_off(ncFileID)
+
+    ! Fill the variables
+    call write_var_2d_real(ncFileID, fy2VarID, fy2)
+    call write_var_2d_real(ncFileID, qVarID, q)
+    call write_var_2d_real(ncFileID, cryVarID, cry)
+    call write_var_2d_real(ncFileID, dyaVarID, dya)
+
+    ! Close the NetCDF file
+    call close_file(ncFileID)
+
+  end subroutine write_state
+
+  !------------------------------------------------------------------
+  ! interpolate_state
+  !
+  ! Increase the database by interpFactor.
+  !------------------------------------------------------------------
+  subroutine interpolate_state(interpFactor)
+
+    integer, intent(in) :: interpFactor
+
+    ! locals
+    ! Define new variables to replace the old variables.
+    ! Once the new variables are defined, they will replace the
+    ! old variables.
+
+    integer new_isd
+    integer new_ied
+    integer new_jsd
+    integer new_jed
+    integer new_js
+    integer new_je
+    real, allocatable :: new_cry(:, :)
+    real, allocatable :: new_q(:, :)
+    real, allocatable :: new_fy2(:, :)
+    real, allocatable :: new_dya(:, :)
+    integer :: odims(4), idims(4)
+
+    odims(1) = isd
+    odims(2) = ied
+    odims(3) = js
+    odims(4) = je + 1
+    call interpolate_CalculateSpace(odims, interpFactor, idims)
+    allocate (new_cry(idims(1):idims(2), idims(3):idims(4)))
+    call interpolate_array(cry, odims, new_cry, idims, interpFactor)
+    allocate (new_fy2(idims(1):idims(2), idims(3):idims(4)))
+    call interpolate_array(fy2, odims, new_fy2, idims, interpFactor)
+    new_js = idims(3)
+    new_je = idims(4)
+
+    odims(1) = isd
+    odims(2) = ied
+    odims(3) = jsd
+    odims(4) = jed
+    call interpolate_CalculateSpace(odims, interpFactor, idims)
+    allocate (new_q(idims(1):idims(2), idims(3):idims(4)))
+    call interpolate_array(q, odims, new_q, idims, interpFactor)
+    allocate (new_dya(idims(1):idims(2), idims(3):idims(4)))
+    call interpolate_array(dya, odims, new_dya, idims, interpFactor)
+    new_isd = idims(1)
+    new_ied = idims(2)
+    new_jsd = idims(3)
+    new_jed = idims(4)
+
+    ! Exchange the old dimensions to the new dimensions.
+    ied = new_ied
+    jed = new_jed
+    je = new_je - 1
+
+    ! Switch the old arrays to the new arrays.
+    call allocate_state()
+    cry = new_cry
+    q = new_q
+    dya = new_dya
+    fy2 = new_fy2
+    deallocate (new_cry); deallocate (new_q); deallocate (new_dya); deallocate (new_fy2)
+
+  end subroutine interpolate_state
+
+>>>>>>> faf86aad291a8627dfab6b54cfedf75f7807238b
 end program yppm_driver
