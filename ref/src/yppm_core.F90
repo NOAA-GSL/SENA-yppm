@@ -22,6 +22,7 @@
 module yppm_core_mod
 
   use netCDFModule
+  use interpolate
 
   implicit none
 
@@ -708,5 +709,72 @@ contains
     call close_file(ncFileID)
 
   end subroutine write_state
+
+  !------------------------------------------------------------------
+  ! interpolate_state
+  !
+  ! Increase the database by interpFactor.
+  !------------------------------------------------------------------
+  subroutine interpolate_state(interpFactor)
+
+    integer, intent(in) :: interpFactor
+
+    ! locals
+    ! Define new variables to replace the old variables.
+    ! Once the new variables are defined, they will replace the
+    ! old variables.
+
+    integer new_isd
+    integer new_ied
+    integer new_jsd
+    integer new_jed
+    integer new_js
+    integer new_je
+    real, allocatable :: new_cry(:, :)
+    real, allocatable :: new_q(:, :)
+    real, allocatable :: new_fy2(:, :)
+    real, allocatable :: new_dya(:, :)
+    integer :: odims(4), idims(4)
+
+    odims(1) = isd
+    odims(2) = ied
+    odims(3) = js
+    odims(4) = je + 1
+    call interpolate_CalculateSpace(odims, interpFactor, idims)
+    allocate (new_cry(idims(1):idims(2), idims(3):idims(4)))
+    call interpolate_array(cry, odims, new_cry, idims, interpFactor)
+    allocate (new_fy2(idims(1):idims(2), idims(3):idims(4)))
+    call interpolate_array(fy2, odims, new_fy2, idims, interpFactor)
+    new_js = idims(3)
+    new_je = idims(4)
+
+    odims(1) = isd
+    odims(2) = ied
+    odims(3) = jsd
+    odims(4) = jed
+    call interpolate_CalculateSpace(odims, interpFactor, idims)
+    allocate (new_q(idims(1):idims(2), idims(3):idims(4)))
+    call interpolate_array(q, odims, new_q, idims, interpFactor)
+    allocate (new_dya(idims(1):idims(2), idims(3):idims(4)))
+    call interpolate_array(dya, odims, new_dya, idims, interpFactor)
+    new_isd = idims(1)
+    new_ied = idims(2)
+    new_jsd = idims(3)
+    new_jed = idims(4)
+
+    ! Exchange the old dimensions to the new dimensions.
+    ied = new_ied
+    jed = new_jed
+    je = new_je - 1
+
+    ! Switch the old arrays to the new arrays.
+    call allocate_state()
+    cry = new_cry
+    q = new_q
+    dya = new_dya
+    fy2 = new_fy2
+    deallocate (new_cry); deallocate (new_q); deallocate (new_dya); deallocate (new_fy2)
+
+  end subroutine interpolate_state
 
 end module yppm_core_mod
