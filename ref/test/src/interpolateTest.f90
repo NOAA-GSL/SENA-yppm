@@ -38,7 +38,7 @@ program interpolateTest
       origArray = 1.0
 
       ! Create the interpolateArray.
-      call interpolate_allocate(odims, interpFactor, idims)
+      call interpolate_CalculateSpace(odims, interpFactor, idims)
       if (allocated(interpArray)) then
         deallocate (interpArray)
       endif

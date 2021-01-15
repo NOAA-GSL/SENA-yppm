@@ -374,11 +374,9 @@ contains
     odims(2) = ied
     odims(3) = js
     odims(4) = je + 1
-    call interpolate_allocate(odims, interpFactor, idims)
+    call interpolate_CalculateSpace(odims, interpFactor, idims)
     allocate (new_cry(idims(1):idims(2), idims(3):idims(4)))
     call interpolate_array(cry, odims, new_cry, idims, interpFactor)
-    
-    call interpolate_allocate(odims, interpFactor, idims)
     allocate (new_fy2(idims(1):idims(2), idims(3):idims(4)))
     call interpolate_array(fy2, odims, new_fy2, idims, interpFactor)
     new_js = idims(3)
@@ -388,11 +386,9 @@ contains
     odims(2) = ied
     odims(3) = jsd
     odims(4) = jed
-    call interpolate_allocate(odims, interpFactor, idims)
+    call interpolate_CalculateSpace(odims, interpFactor, idims)
     allocate (new_q(idims(1):idims(2), idims(3):idims(4)))
     call interpolate_array(q, odims, new_q, idims, interpFactor)
-   
-    call interpolate_allocate(odims, interpFactor, idims)
     allocate (new_dya(idims(1):idims(2), idims(3):idims(4)))
     call interpolate_array(dya, odims, new_dya, idims, interpFactor)
     new_isd = idims(1)
@@ -406,11 +402,7 @@ contains
     je = new_je - 1
 
     ! Switch the old arrays to the new arrays.
-    call deallocate_state()
-    allocate (cry(new_isd:new_ied, new_js:new_je))
-    allocate (q(new_isd:new_ied, new_jsd:new_jed))
-    allocate (dya(new_isd:new_ied, new_jsd:new_jed))
-    allocate (fy2(new_isd:new_ied, new_js:new_je))
+    call allocate_state()
     cry = new_cry
     q = new_q
     dya = new_dya

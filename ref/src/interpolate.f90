@@ -3,7 +3,7 @@ module interpolate
 
 contains
 
-  subroutine interpolate_allocate(odims, interpFactor, fdims)
+  subroutine interpolate_CalculateSpace(odims, interpFactor, fdims)
 
     ! Subroutine for calculating the lower and upper bounds of an
     ! interpolated array with regard to interpFactor.  The user is
@@ -20,7 +20,7 @@ contains
     !
     ! For example:
     ! dimension interpArray(:,:)
-    ! call interpolate_allocate(odims,interpFactor,fdims)
+    ! call interpolate_CalculateSpace(odims,interpFactor,fdims)
     ! l1=fdims(1)
     ! u1=fdims(2)
     ! l2=fdims(3)
@@ -38,50 +38,50 @@ contains
     fdims(2) = odims(2) + (odims(2) - odims(1)) * interpFactor
     fdims(4) = odims(4) + (odims(4) - odims(3)) * interpFactor
 
-  end subroutine interpolate_allocate
+  end subroutine interpolate_CalculateSpace
+
+  ! Bilinear interpolation of f with respect to oa.
+  !
+  ! f's size has been calculated in subroutine interpolate_CalculateSpace
+  ! f has been allocated in the call tree above this subroutine
+  !
+  ! Subroutine Parameters:
+  ! oa          - original array, 2D
+  ! odims       - low/high subscripts for oa
+  ! f           - interpolated array, 2D
+  ! fdims       - low/high subscripts for f 
+  ! interpFactor- interpolation factor
+  ! Here are some illustrations of interpFactor.
+  ! We are assuming that the grid points are equally spaced.
+  !
+  ! An interpolation factor of 1 means 1 new interpolated element.
+  ! So for example, a 3x3 matrix with interpFactor=1 becomes a 5x5 matrix
+  !
+  ! x's are data from oa, the o's are points to be interpolated 
+  !
+  ! [ x x x ]     ==> [x o x o x]
+  ! [ x x x ]         [o o o o o]
+  ! [ x x x ]         [x o x o x]
+  !                   [o o o o o]
+  !                   [x o x o x]
+  !
+  ! And an interpFactor=2, means a 3x3 matrix becomes a 7x7 matrix.
+  ! [ x x x ]     ==> [x o o x o o x]
+  ! [ x x x ]         [o o o o o o o]
+  ! [ x x x ]         [o o o o o o o]
+  !                   [x o o x o o x]
+  !                   [o o o o o o o]
+  !                   [o o o o o o o]
+  !                   [x o o x o o x]
 
   subroutine interpolate_array(oa, odims, f, fdims, interpFactor)
 
-    ! Bilinear interpolation of f with respect to oa.
-    !
-    ! f's size has been calculated in subroutine interpolate_allocate
-    ! f has been allocated in the call tree above this subroutine
-    !
-    ! Subroutine Parameters:
-    ! oa          - original array, 2D
-    ! odims       - low/high subscripts for oa
-    ! f           - interpolated array, 2D
-    ! fdims       - low/high subscripts for f 
-    ! interpFactor- interpolation factor
 
     integer, intent(in)    :: odims(4)
     real,    intent(in)    :: oa(odims(1):odims(2), odims(3):odims(4))
     integer, intent(in)    :: fdims(4)
     real,    intent(inout) :: f(fdims(1):fdims(2), fdims(3):fdims(4))
     integer, intent(in)    :: interpFactor
-
-    ! Here are some illustrations of interpFactor.
-    ! We are assuming that the grid points are equally spaced.
-    !
-    ! An interpolation factor of 1 means 1 new interpolated element.
-    ! So for example, a 3x3 matrix with interpFactor=1 becomes a 5x5 matrix
-    !
-    ! x's are data from oa, the o's are points to be interpolated 
-    !
-    ! [ x x x ]     ==> [x o x o x]
-    ! [ x x x ]         [o o o o o]
-    ! [ x x x ]         [x o x o x]
-    !                   [o o o o o]
-    !                   [x o x o x]
-    !
-    ! And an interpFactor=2, means a 3x3 matrix becomes a 7x7 matrix.
-    ! [ x x x ]     ==> [x o o x o o x]
-    ! [ x x x ]         [o o o o o o o]
-    ! [ x x x ]         [o o o o o o o]
-    !                   [x o o x o o x]
-    !                   [o o o o o o o]
-    !                   [o o o o o o o]
-    !                   [x o o x o o x]
 
     ! Locals
     integer :: x1,x2,y1,y2         ! indices of the corner points
@@ -115,15 +115,22 @@ contains
     ! Loop over all the squares.
     do j = fl2, fu2 - 1, interpFactor + 1
       do i = fl1, fu1 - 1, interpFactor + 1
+
+        ! Find the indices of the corner points
+        x1 = i
+        x2 = i + interpFactor +1
+        y1 = j
+        y2 = j + interpFactor +1
+
+        ! Find the value of the corner points
+        fQ11 = f(x1,y1)
+        fQ12 = f(x1,y2)
+        fQ21 = f(x2,y1)
+        fQ22 = f(x2,y2)
+
         ! Loop over all the interpolated points
         do iy = j, j + interpFactor + 1
            do ix = i, i + interpFactor + 1
-
-             ! Find the indices of the corner points
-             x1 = i
-             x2 = i + interpFactor +1
-             y1 = j
-             y2 = j + interpFactor +1
 
              ! Skip the corner points
              if (((ix==x1) .and. (iy==y1)) .or. &
@@ -132,12 +139,6 @@ contains
                  ((ix==x2) .and. (iy==y2))) then
                cycle 
              endif
-
-             ! Find the value of the corner points
-             fQ11 = f(x1,y1)
-             fQ12 = f(x1,y2)
-             fQ21 = f(x2,y1)
-             fQ22 = f(x2,y2)
 
              ! Get the weights for the x direction
              wx1 = REAL(x2 - ix) / REAL(x2 - x1)
