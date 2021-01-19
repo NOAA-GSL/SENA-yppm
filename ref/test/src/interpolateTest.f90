@@ -1,11 +1,11 @@
-  !------------------------------------------------------------------
-  ! interpolateTest
-  !
-  ! Unit test to test interpolation software.  The origArray is
-  ! expanded by interpFactor to interpolateArray.  The origArray is
-  ! filled with 1.0(s), interpolation should create a larger
-  ! array, also filled with 1.0(s) if successful.
-  !------------------------------------------------------------------
+!------------------------------------------------------------------
+! interpolateTest
+!
+! Unit test to test interpolation software.  The origArray is
+! expanded by interpFactor to interpolateArray.  The origArray is
+! filled with 1.0(s), interpolation should create a larger
+! array, also filled with 1.0(s) if successful.
+!------------------------------------------------------------------
 
 program interpolateTest
 
@@ -13,12 +13,12 @@ program interpolateTest
 
   implicit none
 
-  integer :: i, j, k ! do loop indexes
-  integer :: interpFactor ! also a do loop index
-  integer :: odims(4), idims(4) ! lower/upper bounds for 2D arrays
+  integer           :: i, j, k ! do loop indexes
+  integer           :: interpFactor ! also a do loop index
+  integer           :: odims(4), idims(4) ! lower/upper bounds for 2D arrays
   real, allocatable :: origArray(:, :) ! original array
   real, allocatable :: interpArray(:, :) ! interpolated array
-  real :: epsilon
+  real              :: epsilon
   parameter(epsilon=1e-5)
 
   do i = 3, 7 ! create these 2D arrays
@@ -55,7 +55,7 @@ program interpolateTest
           if (abs(interpArray(k, j) - 1.0) .gt. epsilon) then
             print *, "Failure"
             print *, k, j, interpArray(k, j), interpArray(k, j) - 1.0
-            stop -10
+            stop - 10
           endif
         enddo
       enddo
