@@ -18,8 +18,6 @@ program yppm_driver
   integer   :: narg                                  ! # of command line arguments
   integer*8 :: count_start, count_end, count_rate    ! Timer start/stop
   integer   :: ret                                   ! Return status
-  logical   :: underflow_support, gradual, underflow ! Underflow control vars
-  real      :: fptest                                ! Underflow control var
   integer, external :: print_affinity                ! External subroutine
 
   ! Input configuration variables
@@ -52,24 +50,6 @@ program yppm_driver
 
   ! Get OMP_NUM_THREADS value
   nthreads = omp_get_max_threads()
-
-  ! Force thie program to run in abrupt underflow mode
-  ! Intel's -ftz option flushes denormalized values to zero for non-SSE instructions anyway
-  underflow_support = ieee_support_underflow_control(fptest)
-  if (underflow_support) then
-    write (*, *) "Underflow control supported for the default real kind"
-  else
-    write (*, *) "No underflow control support"
-    stop 1
-  end if
-  call ieee_set_underflow_mode(.false.)
-  call ieee_get_underflow_mode(gradual)
-  if (.not. gradual) then
-    write (*, *) "Able to set abrupt underflow mode"
-  else
-    write (*, *) "Error setting abrupt underflow mode"
-    stop 1
-  end if
 
   ! Print out configuration settings
   write (*, '(A,A)') 'Input file = ', TRIM(input_file)
