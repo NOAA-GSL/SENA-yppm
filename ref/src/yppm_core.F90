@@ -26,6 +26,10 @@ module yppm_core_mod
 
   implicit none
 
+  private 
+  public yppm, print_state, deallocate_state, read_state, write_state, interpolate_state
+  public js, je, isd, ied, jsd, jed, npx, npy, grid_type, ord_in, lim_fac, nested, regional, cry, q, fy2, dya
+
   real, parameter :: ppm_fac = 1.5   !< nonlinear scheme limiter: between 1 and 2
   real, parameter :: r3 = 1. / 3.
   real, parameter :: near_zero = 1.E-25
