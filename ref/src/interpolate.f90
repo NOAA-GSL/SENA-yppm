@@ -89,20 +89,20 @@ contains
   subroutine interpolate_array(oa, odims, f, fdims, interpFactor)
 
     integer, intent(in)    :: odims(4)
-    real, intent(in)    :: oa(odims(1):odims(2), odims(3):odims(4))
+    real, intent(in)       :: oa(odims(1):odims(2), odims(3):odims(4))
     integer, intent(in)    :: fdims(4)
-    real, intent(inout) :: f(fdims(1):fdims(2), fdims(3):fdims(4))
+    real, intent(inout)    :: f(fdims(1):fdims(2), fdims(3):fdims(4))
     integer, intent(in)    :: interpFactor
 
     ! Locals
     integer :: x1, x2, y1, y2         ! indices of the corner points
-    integer :: ix, iy               ! indices of the interpolated point
-    real    :: wx1, wx2, wy1, wy2  ! weights for bilinear interpolation
+    integer :: ix, iy                 ! indices of the interpolated point
+    real    :: wx1, wx2, wy1, wy2     ! weights for bilinear interpolation
     real    :: fQ11, fQ12, fQ21, fQ22 ! function values at the corners
 
     integer :: ol1, ou1, ol2, ou2     ! lower and upper bounds of 2D array oa
     integer :: fl1, fu1, fl2, fu2     ! lower and upper bounds of 2d array f
-    integer :: i, j                 ! do loop indexes to loop over the squares
+    integer :: i, j                   ! do loop indexes to loop over the squares
 
     ! Unlock the subscript bounds of the originalArray.
     ol1 = odims(1)
