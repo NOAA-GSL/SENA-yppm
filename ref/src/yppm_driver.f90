@@ -7,7 +7,6 @@ program yppm_driver
 
   use OMP_LIB
   use yppm_core_mod
-  use netCDFModule
 
   implicit none
 
