@@ -55,7 +55,7 @@ program interpolateTest
           if (abs(interpArray(k, j) - 1.0) .gt. epsilon) then
             print *, "Failure"
             print *, k, j, interpArray(k, j), interpArray(k, j) - 1.0
-            stop - 10
+            stop -10
           endif
         enddo
       enddo
