@@ -23,10 +23,6 @@ jobs:
         with:
           lfs: true
       
-      # Install homebrew 
-      - name: Install Homebrew 
-        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-      
       # Unlink gcc@8 && gcc@9 
       - name: Unlink gcc
         run: brew unlink gcc@8 && brew unlink gcc@9
