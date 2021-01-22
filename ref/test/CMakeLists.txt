@@ -115,3 +115,6 @@ add_test(NAME compare_0.0.12_30
 add_test(NAME InterpolateTest 
          COMMAND bash -c "set -o pipefail; ../test/interpolateTest 2>&1 | tee test_output/interpolateTest.out")
 
+# Test install
+add_test(NAME install
+         COMMAND make install)

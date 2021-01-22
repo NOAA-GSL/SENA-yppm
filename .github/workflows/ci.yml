@@ -49,6 +49,7 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=debug ..
           make
           ctest
+          make install
           
       # Test release mode 
       - name: Test yppm Release
@@ -62,7 +63,8 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=release ..
           make
           ctest       
-       
+          make install
+
   ubuntu_build:
     name: Ubuntu Build
     # Run on ubuntu-latest
@@ -105,6 +107,8 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=debug ..
           make
           ctest
+          make install
+
       # Test release mode
       - name: Build yppm release
         run: |
@@ -117,3 +121,4 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=release ..
           make
           ctest
+          make install

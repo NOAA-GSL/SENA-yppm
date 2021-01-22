@@ -17,3 +17,5 @@ if(OpenMP_FOUND)
     target_link_libraries(${PROJECT_NAME} PUBLIC OpenMP::OpenMP_C)
 endif()
 
+install(TARGETS ${PROJECT_NAME}
+        DESTINATION ${PROJECT_SOURCE_DIR}/exe)
