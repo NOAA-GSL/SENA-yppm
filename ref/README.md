@@ -214,3 +214,10 @@ $ exe/yppm ../test/test_input/yppm_0.0.1.nl
     ```bash
     $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/netcdf-c/lib:/path/to/netcdf-fortran/lib
     ```
+
+6. Executing the kernels, I get "forrtl: severe (174): SIGSEGV, segmentation fault occurred"
+ 
+    This error may be due to too small of a stack size.  Try increasing the stack size with:
+    ```bash
+    $ limit -s 5000000 
+    ```
