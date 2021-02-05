@@ -14,11 +14,11 @@ program yppm_driver
     implicit none
   
     ! Driver variables
-    integer   :: nthreads                              ! # of OpenMP threads
-    integer   :: narg                                  ! # of command line arguments
-    integer*8 :: count_start, count_end, count_rate    ! Timer start/stop
-    integer   :: ret                                   ! Return status
-    integer, external :: print_affinity                ! External subroutine
+    integer            :: nthreads                              ! # of OpenMP threads
+    integer            :: narg                                  ! # of command line arguments
+    integer*8          :: count_start, count_end, count_rate    ! Timer start/stop
+    integer            :: ret                                   ! Return status
+    integer, external  :: print_affinity                ! External subroutine
   
     ! Input configuration variables
     character(len=128) :: namelist_file = "test_input/yppm_0.0.1.nl"
@@ -62,12 +62,12 @@ program yppm_driver
     ret = GPTLinitialize()
   end if
 #endif
-  
+
     ! Print out configuration settings
     write (*, '(A,A)') 'Input file = ', TRIM(input_file)
     write (*, '(A,I0)') 'nthreads = ', nthreads
     ret = print_affinity(0)
-  
+
     ! Read the input state from the NetCDF input file
     call read_state(TRIM(input_file))
     
