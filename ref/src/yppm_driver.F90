@@ -7,9 +7,9 @@ program yppm_driver
 
     use OMP_LIB
     use yppm_core_mod
-  #ifdef ENABLE_GPTL
-    use gptl
-  #endif
+#ifdef ENABLE_GPTL
+  use gptl
+#endif
   
     implicit none
   
@@ -57,11 +57,11 @@ program yppm_driver
     nthreads = omp_get_max_threads()
   
     ! Initialize GPTL if enabled
-  #ifdef ENABLE_GPTL
-    if (do_profile == 1) then
-      ret = GPTLinitialize()
-    end if
-  #endif
+#ifdef ENABLE_GPTL
+  if (do_profile == 1) then
+    ret = GPTLinitialize()
+  end if
+#endif
   
     ! Print out configuration settings
     write (*, '(A,A)') 'Input file = ', TRIM(input_file)
@@ -89,21 +89,21 @@ program yppm_driver
     ! Get the start time
     call system_clock(count_start, count_rate)
   
-  #ifdef ENABLE_GPTL
-    if (do_profile == 1) then
-       ret = gptlstart('kernel')
-    end if
-  #endif
+#ifdef ENABLE_GPTL
+  if (do_profile == 1) then
+     ret = gptlstart('kernel')
+  end if
+#endif
   
     ! Run the kernel
     call yppm(fy2, q, cry, ord_in, isd, ied, isd, ied, js, je, jsd, jed, npx, npy, dya, &
               nested, grid_type, lim_fac, regional)
   
-  #ifdef ENABLE_GPTL
-    if (do_profile == 1) then
-      ret = gptlstop('kernel')
-    end if
-  #endif
+#ifdef ENABLE_GPTL
+  if (do_profile == 1) then
+    ret = gptlstop('kernel')
+  end if
+#endif
   
     ! Get the stop time
     call system_clock(count_end, count_rate)
@@ -122,12 +122,11 @@ program yppm_driver
     call deallocate_state()
   
     ! Turn off GPTL if enabled
-  #ifdef ENABLE_GPTL
-    if (do_profile == 1) then
-      ret = gptlpr(0)
-      ret = gptlfinalize()
-    end if
-  #endif
+#ifdef ENABLE_GPTL
+  if (do_profile == 1) then
+    ret = gptlpr(0)
+    ret = gptlfinalize()
+  end if
+#endif
   
-  end program yppm_driver
-  
+end program yppm_driver

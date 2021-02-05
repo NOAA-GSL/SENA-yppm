@@ -24,7 +24,7 @@ module yppm_core_mod
   use netCDFModule
   use interpolate
 #ifdef ENABLE_GPTL
-  use gptl
+ use gptl
 #endif
 
   implicit none
@@ -111,9 +111,9 @@ contains
     integer :: ret
 
 #ifdef ENABLE_GPTL
-    if (do_profile == 1) then
-      ret = gptlstart('yppm')
-    end if
+   if (do_profile == 1) then
+     ret = gptlstart('yppm')
+   end if
 #endif
 
     if (.not. (nested .or. regional) .and. grid_type < 3) then
@@ -445,9 +445,9 @@ contains
     enddo
 
 #ifdef ENABLE_GPTL
-  if (do_profile == 1) then
-    ret = gptlstop('yppm')
-  end if
+ if (do_profile == 1) then
+   ret = gptlstop('yppm')
+ end if
 #endif
 
   end subroutine yppm
@@ -470,9 +470,9 @@ contains
     integer         :: ret 
 
 #ifdef ENABLE_GPTL
-  if (do_profile == 1) then
-    ret = gptlstart('pert_ppm')
-  end if
+ if (do_profile == 1) then
+   ret = gptlstart('pert_ppm')
+ end if
 #endif
 
     !-----------------------------------
@@ -525,9 +525,9 @@ contains
     endif
 
 #ifdef ENABLE_GPTL
-  if (do_profile == 1) then
-    ret = gptlstop('pert_ppm')
-  end if
+ if (do_profile == 1) then
+   ret = gptlstop('pert_ppm')
+ end if
 #endif
 
   end subroutine pert_ppm
