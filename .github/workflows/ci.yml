@@ -192,4 +192,4 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=debug -DENABLE_GPTL=1 -DENABLE_AUTOPROFILING=1 ..
           make
           ctest
-          grep yppm_core_mod_MOD_yppm test/timing.000000 | grep SUM
+          grep yppm_core_mod_MOD_yppm test/timing.000000 
