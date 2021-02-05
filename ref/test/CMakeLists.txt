@@ -64,7 +64,7 @@ ${PROJECT_SOURCE_DIR}/test/src/interpolateTest.f90
 add_executable (interpolateTest ${test_src_files}  ${PROJECT_SOURCE_DIR}/src/interpolate.f90)
 
 if ( GPTL_FOUND )
-   target_link_libraries( ${PROJECT_NAME} PUBLIC GPTL::GPTL )
+   target_link_libraries( interpolateTest PUBLIC GPTL::GPTL )
 endif()
 
 # 0.1.7 input
