@@ -14,3 +14,9 @@ set( CMAKE_Fortran_FLAGS_RELEASE "-O3 -march=native -funroll-all-loops -finline-
 ####################################################################
 
 set( CMAKE_Fortran_FLAGS_DEBUG "${CMAKE_Fortran_FLAGS_DEBUG} -O0 -fcheck=bounds -ffpe-trap=invalid,zero,overflow" )
+
+####################################################################
+# FLAGS FOR AUTOPROFILING
+####################################################################
+
+set( Fortran_AUTOPROFILING_FLAGS        "-finstrument-functions" )

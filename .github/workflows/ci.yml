@@ -36,6 +36,20 @@ jobs:
         run: |
           nc-config --version
           nf-config --version
+
+      # Install GPTL
+      - name: Install GPTL
+        run: |
+          cd /tmp
+          export CC=gcc-10
+          export FC=gfortran-10
+          wget https://github.com/jmrosinski/GPTL/releases/download/v8.0.3/gptl-8.0.3.tar.gz
+          tar -xzvf gptl-8.0.3.tar.gz
+          cd gptl-8.0.3
+          ./configure
+          make
+          make check
+          sudo make install
       
       # Test debug mode 
       - name: Test yppm Debug 
@@ -64,6 +78,28 @@ jobs:
           make
           ctest       
           make install
+
+      # Test GPTL support
+      - name: Build c_sw with GPTL profiling
+        run: |
+          cd ref
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12_10.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12_20.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12_30.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.1.7_10.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.1.7_20.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.1.7_30.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.1.7.nl
+          rm -rf build
+          mkdir build
+          cd build
+          export CC=gcc-10
+          export FC=gfortran-10
+          cmake -DCMAKE_BUILD_TYPE=debug -DENABLE_GPTL=1 -DENABLE_AUTOPROFILING=1 ..
+          make
+          ctest
+          grep sw_core_mod_MOD_c_sw test/timing.000000 | grep SUM
 
   ubuntu_build:
     name: Ubuntu Build
@@ -95,6 +131,19 @@ jobs:
         run: |
           nc-config --version
           nf-config --version
+
+      # Install GPTL
+      - name: Install GPTL
+        run: |
+          cd /tmp
+          wget https://github.com/jmrosinski/GPTL/releases/download/v8.0.3/gptl-8.0.3.tar.gz
+          tar -xzvf gptl-8.0.3.tar.gz
+          cd gptl-8.0.3
+          ./configure
+          make
+          make check
+          sudo make install
+
       # Test debug mode
       - name: Build yppm debug
         run: |
@@ -122,3 +171,25 @@ jobs:
           make
           ctest
           make install
+
+      # Test GPTL support
+      - name: Build c_sw with GPTL profiling
+        run: |
+          cd ref
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12_10.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12_20.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12_30.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.1.7_10.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.1.7_20.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.1.7_30.nl
+          sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.1.7.nl
+          rm -rf build
+          mkdir build
+          cd build
+          export CC=gcc
+          export FC=gfortran
+          cmake -DCMAKE_BUILD_TYPE=debug -DENABLE_GPTL=1 -DENABLE_AUTOPROFILING=1 ..
+          make
+          ctest
+          grep sw_core_mod_MOD_c_sw test/timing.000000 | grep SUM
