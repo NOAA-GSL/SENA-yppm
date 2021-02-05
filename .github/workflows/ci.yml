@@ -80,7 +80,7 @@ jobs:
           make install
 
       # Test GPTL support
-      - name: Build c_sw with GPTL profiling
+      - name: Build yppm with GPTL profiling
         run: |
           cd ref
           sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12_10.nl
@@ -99,7 +99,7 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=debug -DENABLE_GPTL=1 -DENABLE_AUTOPROFILING=1 ..
           make
           ctest
-          grep sw_core_mod_MOD_c_sw test/timing.000000 | grep SUM
+          grep yppm_core_mod_MOD_yppm test/timing.000000 | grep SUM
 
   ubuntu_build:
     name: Ubuntu Build
@@ -173,7 +173,7 @@ jobs:
           make install
 
       # Test GPTL support
-      - name: Build c_sw with GPTL profiling
+      - name: Build yppm with GPTL profiling
         run: |
           cd ref
           sed -i -e 's/do_profile=0/do_profile=1/' test/test_input/yppm_0.0.12_10.nl
@@ -192,4 +192,4 @@ jobs:
           cmake -DCMAKE_BUILD_TYPE=debug -DENABLE_GPTL=1 -DENABLE_AUTOPROFILING=1 ..
           make
           ctest
-          grep sw_core_mod_MOD_c_sw test/timing.000000 | grep SUM
+          grep yppm_core_mod_MOD_yppm test/timing.000000 | grep SUM

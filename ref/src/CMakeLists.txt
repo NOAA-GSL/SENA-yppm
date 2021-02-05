@@ -4,7 +4,7 @@ print_affinity.c
 runnable.c
 yppm_core.F90
 interpolate.f90
-yppm_driver.f90
+yppm_driver.F90
 )
 
 add_executable( ${PROJECT_NAME} ${yppm_src_files} )
