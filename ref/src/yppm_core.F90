@@ -539,7 +539,7 @@ contains
 
     ! Note: Assumed shape array sections always start with index=1 for all dimensions
     !       So we don't have to know start/end indices here
-    write(*,'(A5, A15,5ES20.6)') "TEST ", name, minval(DBLE(data)), maxval(DBLE(data)), DBLE(data(1,1)), &
+    write(*,'(A5, A15,5ES20.5)') "TEST ", name, minval(DBLE(data)), maxval(DBLE(data)), DBLE(data(1,1)), &
                             DBLE(data(size(data,1), size(data,2))),            &
                             sqrt(sum(DBLE(data)**2) / size(data))
 
