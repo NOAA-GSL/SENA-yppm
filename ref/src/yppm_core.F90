@@ -23,12 +23,17 @@ module yppm_core_mod
 
   use netCDFModule
   use interpolate
+#ifdef ENABLE_GPTL
+ use gptl
+#endif
 
   implicit none
 
   private 
   public yppm, print_state, deallocate_state, read_state, write_state, interpolate_state
-  public js, je, isd, ied, jsd, jed, npx, npy, grid_type, ord_in, lim_fac, nested, regional, cry, q, fy2, dya
+  public js, je, isd, ied, jsd, jed, npx, npy, grid_type, ord_in, lim_fac, nested, regional, cry, q, fy2, dya, do_profile
+
+  integer :: do_profile = 0  ! Flag for enabling profiling at runtime
 
   real, parameter :: ppm_fac = 1.5   !< nonlinear scheme limiter: between 1 and 2
   real, parameter :: r3 = 1. / 3.
@@ -103,6 +108,13 @@ contains
     logical :: hi6(ifirst:ilast)
     real    :: x0, xt, qtmp, pmp_1, lac_1, pmp_2, lac_2, r1
     integer :: i, j, js1, je3, je1, mord
+    integer :: ret
+
+#ifdef ENABLE_GPTL
+   if (do_profile == 1) then
+     ret = gptlstart('yppm')
+   end if
+#endif
 
     if (.not. (nested .or. regional) .and. grid_type < 3) then
       ! Cubed-sphere:
@@ -432,6 +444,12 @@ contains
       enddo
     enddo
 
+#ifdef ENABLE_GPTL
+ if (do_profile == 1) then
+   ret = gptlstop('yppm')
+ end if
+#endif
+
   end subroutine yppm
 
   !------------------------------------------------------------------
@@ -449,6 +467,13 @@ contains
     real            :: a4, da1, da2, a6da, fmin
     integer         :: i
     real, parameter :: r12 = 1. / 12.
+    integer         :: ret 
+
+#ifdef ENABLE_GPTL
+ if (do_profile == 1) then
+   ret = gptlstart('pert_ppm')
+ end if
+#endif
 
     !-----------------------------------
     ! Optimized PPM in perturbation form:
@@ -498,6 +523,12 @@ contains
         endif
       enddo
     endif
+
+#ifdef ENABLE_GPTL
+ if (do_profile == 1) then
+   ret = gptlstop('pert_ppm')
+ end if
+#endif
 
   end subroutine pert_ppm
 

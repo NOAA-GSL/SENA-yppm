@@ -3,3 +3,7 @@
   output_file='data/outputs/yppm_0.0.12_30.nc'
   interpFactor = 30
 /
+
+&debug
+  do_profile=0
+/
