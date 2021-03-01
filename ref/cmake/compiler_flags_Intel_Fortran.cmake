@@ -15,3 +15,9 @@ set( CMAKE_Fortran_FLAGS_RELEASE "-fno-alias -auto -align array64byte -xHOST -qn
 ####################################################################
 
 set( CMAKE_Fortran_FLAGS_DEBUG   "-O0 -warn -debug -nolib-inline -fno-inline-functions -assume protect_parens,minus0 -prec-div -prec-sqrt -check bounds -check uninit -fp-stack-check -init=snan,array " )
+
+####################################################################	
+# FLAGS FOR AUTOPROFILING	
+####################################################################	
+
+set( Fortran_AUTOPROFILING_FLAGS        "-finstrument-functions" )
