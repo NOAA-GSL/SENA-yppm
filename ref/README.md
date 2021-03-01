@@ -19,6 +19,11 @@ The following packages are required for building and running this kernel:
 * git
 * [git-lfs](https://git-lfs.github.com/)
 
+## Optional Dependencies
+The following packages are optional for building and running this kernel:
+
+* [GPTL](https://github.com/jmrosinski/GPTL) (General Purpose Timing Library)
+  
 ## Prerequisites
 This code requires git-lfs. Before cloning the repository, verify that
 git-lfs is installed, by issuing the following command. This only needs to be done once per user per machine.
@@ -84,6 +89,33 @@ On many systems, the above will suffice. However, some systems will require you 
 find dependencies, particularly if software depencencies are not installed in standard locations.
 See below for more information.
 
+### Building with GPTL profiling support
+
+[GPTL](https://github.com/jmrosinski/GPTL) is a timing library that can be used to generate timing
+statistics for codes during execution. See the [GPTL documentation](https://jmrosinski.github.io/GPTL/)
+for more information and examples.
+
+If GPTL is installed and loaded onto system paths, this kernel may be built with support for
+profiling using GPTL. There are two options: autoprofiling and manual insertion of custom GPTL timers.
+
+Autoprofiling will give you timings for all subroutine calls in the kernel. To enable GPTL
+autoprofiling add `-DCMAKE_BUILD_TYPE=debug -DENABLE_GPTL=1 -DENABLE_AUTOPROFILING=1` to the
+`cmake` command. For example:
+
+```bash
+$ cmake -DCMAKE_BUILD_TYPE=debug -DENABLE_GPTL=1 -DENABLE_AUTOPROFILING=1 ..
+```
+
+Manual insertion of custom timers allows you to time the execution of specific blocks of code.
+To enable GPTL so you can add your own custom timers, add `-DENABLE_GPTL=1` to the `cmake`
+command.  For example:
+
+```bash
+$ cmake -DCMAKE_BUILD_TYPE=debug -DENABLE_GPTL=1 ..
+```
+
+GPTL timing information is written to `timing.*` files in the directory where the code executes.
+
 ### Machines that use modules to manage software
 
 Most HPC systems use modules to manage software.  Make sure you have loaded the versions of
@@ -142,13 +174,15 @@ $ ctest -VV -R regression_0.0.3
 
 ## Build and test script
 
-For convenience, a build script is provided that builds the code and runs the test suite.
+For convenience, a build script is provided that builds the code and runs the test suite. An
+optional third argument (as shown below) specifies the type of GPTL support desired.  GPTL
+support is off by default.
 
 **(NOTE: This script is written for machines that use modules and it may need to be modified,
 depending on how modules are set up on your system)**
 
 ```bash
-$ ./build.sh <gcc | intel> <debug | release>
+$ ./build.sh <gcc | intel> <debug | release> [off | manual | auto]
 ```
 
 ## Installation and running

@@ -3,14 +3,15 @@
 set -e
 
 # Check usage
-if [ $# -ne 2 ]; then
-  echo "Usage: build.sh gcc|intel debug|release"
+if [ $# -lt 2 -o $# -gt 3 ]; then
+  echo "Usage: build.sh gcc|intel debug|release [off|manual|auto]"
   exit 1
 fi
 
 # Get arguments
 COMPILER=$1
 BUILD_TYPE=$2
+GPTL="${3:-off}"
 
 # Start with a clean module environment
 module purge
@@ -44,6 +45,28 @@ case ${BUILD_TYPE} in
   ;;
 esac
 
+# Handle profile flag
+GPTL_CMAKE_OPTIONS=""
+case ${GPTL} in
+  "off" )
+    echo "Building without GPTL enabled"
+  ;;
+  "manual" )
+    echo "Building with GPTL enabled"
+    GPTL_CMAKE_OPTIONS="-DENABLE_GPTL=1"
+    module load gptl
+  ;;
+  "auto" )
+    echo "Building with GPTL auto-profiling enabled"
+    GPTL_CMAKE_OPTIONS="-DENABLE_GPTL=1 -DENABLE_AUTOPROFILING=1"
+    module load gptl
+  ;;
+  *)
+    echo "Unsupportd GPTL profile mode: ${GPTL}"
+    exit 1
+  ;;
+esac
+
 # Print out modules in use
 module load netcdf cmake
 module list
@@ -54,7 +77,7 @@ mkdir build
 cd build
 
 # Build
-cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ..
+cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} ${GPTL_CMAKE_OPTIONS} ..
 make -j4 VERBOSE=1
 
 # Run the test suite
