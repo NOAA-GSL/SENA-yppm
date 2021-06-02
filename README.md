@@ -15,12 +15,13 @@ a DOC bureau, shall not be used in any manner to imply endorsement of any
 commercial product or activity by DOC or the United States Government.
 ```
 
-This project contains derivative works from the
-[Geophysical Fluid Dynamics Laboratory](http://www.gfdl.noaa.gov/)
- GitHub projects for the
-[FV3 Dynamical Core](https://www.github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere).
-  As such, licensing ascribed to those projects remains in effect and the original
-licensing restrictions and allowances are still applicable.
+This project contains derivative work from the Geophysical Fluid Dynamics
+Laboratory GitHub project for the FV3 dynamical core
+(https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere). It is a stand alone
+subset of the original specifically licensed for use under the
+[Apache License](https://www.apache.org/licenses/LICENSE-2.0).
+The application of the Apache License to this standalone work does not imply
+nor shall it be construed as any change to the original source license.
 
 # Overview
 
