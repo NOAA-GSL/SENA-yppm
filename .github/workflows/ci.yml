@@ -23,9 +23,9 @@ jobs:
         with:
           lfs: true
       
-      # Unlink gcc@8 && gcc@9 
+      # Unlink gcc@9 
       - name: Unlink gcc
-        run: brew unlink gcc@8 && brew unlink gcc@9
+        run: brew unlink gcc@9
       
       # Install netCDF
       - name: Install netCDF 

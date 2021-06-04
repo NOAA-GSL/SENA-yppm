@@ -1,22 +1,13 @@
 !***********************************************************************
-!*                   GNU Lesser General Public License
 !*
-!* This file is part of the FV3 dynamical core.
+!* This file contains derivative work from the Geophysical Fluid Dynamics
+!* Laboratory GitHub project for the FV3 dynamical core
+!* (https://github.com/NOAA-GFDL/GFDL_atmos_cubed_sphere). It is a stand alone
+!* subset of the original specifically licensed for use under the
+!* Apache License (https://www.apache.org/licenses/LICENSE-2.0).
+!* The application of the Apache License to this standalone work does not imply
+!* nor shall it be construed as any change to the original source license.
 !*
-!* The FV3 dynamical core is free software: you can redistribute it
-!* and/or modify it under the terms of the
-!* GNU Lesser General Public License as published by the
-!* Free Software Foundation, either version 3 of the License, or
-!* (at your option) any later version.
-!*
-!* The FV3 dynamical core is distributed in the hope that it will be
-!* useful, but WITHOUT ANYWARRANTY; without even the implied warranty
-!* of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-!* See the GNU General Public License for more details.
-!*
-!* You should have received a copy of the GNU Lesser General Public
-!* License along with the FV3 dynamical core.
-!* If not, see <http://www.gnu.org/licenses/>.
 !***********************************************************************
 
 module yppm_core_mod
